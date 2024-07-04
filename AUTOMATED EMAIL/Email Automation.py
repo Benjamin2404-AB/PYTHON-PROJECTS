@@ -5,9 +5,9 @@ import ssl
 from email.mime.application import MIMEApplication
 
 
-sender = "benab2404@gmail.com" 
+sender = "XXXXX4@gmail.com" 
 sender_password = ""
-receivers = ["frankappiahboadu23@gmail.com","phlorence1967@gmail.com"]
+receivers = ["XXXX3@gmail.com","XXXX@gmail.com"]
 
 subject = "APPLICATION FOR EMPLOYMENT AS INTERN"
 
