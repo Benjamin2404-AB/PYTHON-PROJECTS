@@ -1,0 +1,48 @@
+from flask import Flask, jsonify
+import requests
+
+app = Flask(__name__)
+
+
+SERVICES= {
+    "service A" : "http://localhost:5001/api/serviceA",
+    "service B" : "http://localhost:5001/api/serviceB",
+    "service C"  : "http://localhost:5001/api/serviceC",
+}
+@app.route("/")
+def home():
+    return "Hello, Flask is running!"
+
+
+def service_check(url):
+    try:
+        response = requests.get(url, timeout=2)
+        if response.status_code == 200:
+            return {"status": "UP"}
+        else:
+            return {"status": "DOWN", "code": response.status_code}
+    except Exception as e:
+        return {"status": "DOWN", "error": str(e)}
+
+@app.route("/health")
+def health():
+    results = {}
+    overall_status = "ONLINE"
+
+    for name, url in SERVICES.items():
+        result = service_check(url)
+        results[name] = result
+        if result["status"] == "DOWN":
+            overall_status = "OFFLINE"
+
+    if overall_status == "ONLINE":
+        app.logger.info("All services running effectively")
+    else:
+        app.logger.warning("One or more services unavailable — immediate check required")
+    return jsonify({
+        "overall_status": overall_status,
+        "services": results
+    })
+    
+if __name__ == "__main__":
+    app.run(debug=True)
